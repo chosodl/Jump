@@ -11,7 +11,7 @@
     "version": "1",
     "name": "Crypto Portfolio Tracker",
     "homeUrl": "https://basejump-7575.vercel.app/",
-    "iconUrl": "https://ex.co/i.png",
+    "iconUrl": "https://basejump-7575.vercel.app/images/banner.png",
     "splashImageUrl": "https://ex.co/l.png",
     "splashBackgroundColor": "#000000",
     "webhookUrl": "https://basejump-7575.vercel.app/",
