@@ -532,7 +532,7 @@
         constructor() { this.width = Math.random() * 20 + 20; this.height = Math.random() * 25 + 30; this.x = canvas.width; this.y = game.groundY - this.height; }
         update() { this.x -= game.speed; }
         draw() { ctx.fillStyle = OBSTACLE_COLOR; ctx.shadowColor = 'rgba(0, 0, 0, 0.7)'; ctx.shadowBlur = 6; ctx.shadowOffsetX = 3; ctx.shadowOffsetY = 3; ctx.beginPath(); ctx.moveTo(this.x, game.groundY); ctx.lineTo(this.x + this.width / 2, this.y); ctx.lineTo(this.x + this.width, game.groundY); ctx.closePath(); ctx.fill(); ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0; }
-        getBounds() { return { x: this.x, y: this.y, width: this.size, height: this.size }; }
+        getBounds() { return { x: this.x, y: this.y, width: this.width, height: this.height }; }
     }
     class Bird { 
         constructor() { this.x = canvas.width; this.y = Math.random() * (canvas.height * 0.3) + 10; this.size = Math.random() * 6 + 8; this.speedFactor = 0.5 + Math.random() * 0.2; }
@@ -565,9 +565,50 @@
     function spawnBird(time) { 
         const r = 0.7 + Math.random() * 0.6; if (time - game.lastBirdTime > game.birdInterval * r) { birds.push(new Bird()); game.lastBirdTime = time; }
     }
+    
+    // UPDATED: checkCollision to check for intersection
     function checkCollision() { 
         const pRect = player.getBounds();
-        for (let i = 0; i < obstacles.length; i++) { const oRect = obstacles[i].getBounds(); if (pRect.x < oRect.x + oRect.width && pRect.x + pRect.width > oRect.x && pRect.y < oRect.y + oRect.height && pRect.y + pRect.height > oRect.y) { gameOver(); return true; } } return false;
+        
+        // Player is a circle (radius r) approximated as a box for collision
+        const playerXCenter = pRect.x + pRect.width / 2;
+        const playerYCenter = pRect.y + pRect.height / 2;
+        const playerRadius = pRect.width / 2;
+        
+        for (let i = 0; i < obstacles.length; i++) { 
+            const oRect = obstacles[i].getBounds(); 
+            
+            // Check for overlap between the player box and obstacle box
+            // Note: The player draw function is a circle, but the bounds are a square
+            if (pRect.x < oRect.x + oRect.width && // Check if player's right edge is past obstacle's left edge
+                pRect.x + pRect.width > oRect.x && // Check if player's left edge is past obstacle's right edge
+                pRect.y < oRect.y + oRect.height && // Check if player's bottom edge is past obstacle's top edge
+                pRect.y + pRect.height > oRect.y) // Check if player's top edge is past obstacle's bottom edge
+            { 
+                 // Simple Bounding Box Collision detected. 
+                 // Since the obstacle is a spike and the player is a ball, 
+                 // we rely on the bounding box for simplicity in a mini-game.
+                 gameOver(); 
+                 return true; 
+            } 
+        } 
+        
+        // Check collision with birds (simple box check, but we use the size property)
+         for (let i = 0; i < birds.length; i++) {
+            const b = birds[i];
+            
+            // Bird bounds: using the draw size (2*size for width, size for height)
+            if (playerXCenter - playerRadius < b.x + b.size * 2 &&
+                playerXCenter + playerRadius > b.x &&
+                playerYCenter - playerRadius < b.y + b.size &&
+                playerYCenter + playerRadius > b.y) 
+            {
+                gameOver();
+                return true;
+            }
+        }
+        
+        return false;
     }
     
     function gameOver() {
@@ -619,7 +660,12 @@
         drawGround();
         player.update(); player.draw();
         spawnObstacle(time); obstacles = obstacles.filter(o => { o.update(); o.draw(); return o.x + o.width > 0; });
-        checkCollision();
+        
+        // Important: Check collision only after drawing/updating all positions
+        if (checkCollision()) {
+             return; // Stop the loop if collision happens
+        }
+        
         updateScore();
         animationFrameId = requestAnimationFrame(gameLoop);
     }
@@ -708,4 +754,3 @@
 
 </body>
 </html>
-
