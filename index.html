@@ -532,7 +532,7 @@
         constructor() { this.width = Math.random() * 20 + 20; this.height = Math.random() * 25 + 30; this.x = canvas.width; this.y = game.groundY - this.height; }
         update() { this.x -= game.speed; }
         draw() { ctx.fillStyle = OBSTACLE_COLOR; ctx.shadowColor = 'rgba(0, 0, 0, 0.7)'; ctx.shadowBlur = 6; ctx.shadowOffsetX = 3; ctx.shadowOffsetY = 3; ctx.beginPath(); ctx.moveTo(this.x, game.groundY); ctx.lineTo(this.x + this.width / 2, this.y); ctx.lineTo(this.x + this.width, game.groundY); ctx.closePath(); ctx.fill(); ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0; }
-        getBounds() { return { x: this.x, y: this.y, width: this.width, height: this.height }; }
+        getBounds() { return { x: this.x, y: this.y, width: this.size, height: this.size }; }
     }
     class Bird { 
         constructor() { this.x = canvas.width; this.y = Math.random() * (canvas.height * 0.3) + 10; this.size = Math.random() * 6 + 8; this.speedFactor = 0.5 + Math.random() * 0.2; }
