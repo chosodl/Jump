@@ -14,7 +14,7 @@
     "iconUrl": "https://ex.co/i.png",
     "splashImageUrl": "https://ex.co/l.png",
     "splashBackgroundColor": "#000000",
-    "webhookUrl": "https://ex.co/api/webhook",
+    "webhookUrl": "https://basejump-7575.vercel.app/",
     "subtitle": "Easy to manage",
     "description": "Track and manage your cryptocurrency portfolio.",
     "screenshotUrls": [
