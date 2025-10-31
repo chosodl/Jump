@@ -28,7 +28,7 @@
     "tagline": "Save instantly",
     "ogTitle": "Example Mini App",
     "ogDescription": "Easy to manage portfolio.",
-    "ogImageUrl": "https://basejump-7575.vercel.app/images/**banner-farcaster-3-2.png*",
+    "ogImageUrl": "https://basejump-7575.vercel.app/images/banner-farcaster-3-2.png",
     "noindex": true
   }
 }
