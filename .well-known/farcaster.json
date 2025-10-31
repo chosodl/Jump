@@ -24,11 +24,11 @@
     ],
     "primaryCategory": "finance",
     "tags": ["finance"],
-    "heroImageUrl": "https://ex.co/og.png",
+    "heroImageUrl": "https://basejump-7575.vercel.app/images/banner.png",
     "tagline": "Save instantly",
     "ogTitle": "Example Mini App",
     "ogDescription": "Easy to manage portfolio.",
-    "ogImageUrl": "https://ex.co/og.png",
+    "ogImageUrl": "https://basejump-7575.vercel.app/images/banner.png",
     "noindex": true
   }
 }
