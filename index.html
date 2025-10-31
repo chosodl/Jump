@@ -6,24 +6,26 @@
     <title>BaseJUMP Mini-Game</title>
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- 1. Farcaster Embed Metadata (Update with your links) -->
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="800" />
+
     <meta name="fc:miniapp" content='{
       "version":"next",
-      "imageUrl":"https://basejump-7575.vercel.app/images/banner-farcaster-3-2.png", 
+      "imageUrl":"https://basejump-7575.vercel.app/images/banner-farcaster-3-2.png",
       "button":{
           "title":"Play BaseJUMP!",
           "action":{
           "type":"launch_miniapp",
           "name":"BaseJUMP",
-          "url":"https://basejump-7575.vercel.app/" 
+          "url":"https://basejump-7575.vercel.app/"
           }
       },
-      "castShareUrl": "https://basejump-7575.vercel.app/", 
-      "ogTitle": "BaseJUMP Mini-App", 
-      "ogDescription": "Jump over the spikes in this addictive mini-game!", 
-      "ogImageUrl": "https://basejump-7575.vercel.app/images/banner-farcaster-3-2.png" 
+      "castShareUrl": "https://basejump-7575.vercel.app/",
+      "ogTitle": "BaseJUMP Mini-App",
+      "ogDescription": "Jump over the spikes in this addictive mini-game!",
+      "ogImageUrl": "https://basejump-7575.vercel.app/images/banner-farcaster-3-2.png"
     }' />
-
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
         body {
@@ -53,7 +55,7 @@
             max-height: 700px;
             position: relative; /* Important: canvas positioning */
         }
-        
+       
         /* New: Canvas as the background layer */
         #gameCanvas {
             position: absolute;
@@ -73,14 +75,14 @@
             top: 10px; /* 10px padding of app-container */
             left: 10px;
             z-index: 10; /* Above canvas */
-            
+           
             display: none; /* Hidden by default, shown by JS */
             width: calc(100% - 20px); /* Inner area width */
             height: calc(100% - 20px); /* Inner area height */
             flex-direction: column;
             align-items: center;
         }
-        
+       
         /* Override for landing page to fit in its place */
         #landing-page {
             justify-content: center;
@@ -102,11 +104,11 @@
             justify-content: center;
             gap: 10px;
         }
-        
+       
         #landing-page h1 span.logo-text {
             line-height: 1; 
         }
-        
+       
         /* Base Cube Logo Styles */
         #landing-page h1 span.logo-base {
             font-size: 4rem; /* Adjust size */
@@ -135,7 +137,7 @@
             color: #FFF; /* White color for controls on blue background */
             text-align: center;
         }
-        
+       
         /* ... rest of CSS ... (No major changes here) */
 
         .connect-btn {
@@ -160,7 +162,7 @@
             transform: translateY(3px);
             box-shadow: 0 3px 0 #00AA66;
         }
-        
+       
         .message-box {
             position: absolute;
             top: 50%;
@@ -237,56 +239,43 @@
 
 <div id="app-container">
 
-    <!-- Canvas for the Game/Background (Now the permanent background) -->
     <canvas id="gameCanvas"></canvas>
 
-    <!-- 1. Landing Page / Connect Wallet UI (Overlay View) -->
     <div id="landing-page" style="display: flex;">
         <div class="flex flex-col items-center justify-center w-full h-full p-8">
-            <!-- Title with Base Cube Logo -->
             <h1>
-                <span class="logo-base">&#9632;</span> <!-- Base Cube Logo -->
-                <span class="logo-text">BaseJUMP</span>
+                <span class="logo-base">&#9632;</span> <span class="logo-text">BaseJUMP</span>
             </h1>
-            
+           
             <p class="text-white text-lg md:text-2xl mt-4 mb-10">Connect your wallet to start playing!</p>
-            
+           
             <button id="connect-wallet-btn" class="connect-btn">
                 Connect Wallet
             </button>
 
-            <!-- Status for Wallet Connection -->
             <div id="wallet-status" class="mt-4 p-3 font-semibold rounded-lg text-sm" style="display: none;"></div>
 
-            <!-- Display Connected Address -->
-             <div id="connected-address" class="mt-4 p-2 bg-white/20 text-white rounded-lg text-sm font-mono" style="display: none;"></div>
+            <div id="connected-address" class="mt-4 p-2 bg-white/20 text-white rounded-lg text-sm font-mono" style="display: none;"></div>
 
         </div>
     </div>
 
 
-    <!-- 2. Game UI (Overlay View - Hidden until connected) -->
     <div id="game-container">
-        <!-- UI Bar for Scores -->
         <div id="ui-bar">
             <span id="score-display">Score: 0</span>
             <span id="best-display">Best: 0</span>
         </div>
 
-        <!-- The Canvas is outside now, the rest is the game UI -->
-
-        <!-- Controls Hint -->
         <div id="controls">
             Space / **Double Tap / Double Click** to jump
         </div>
 
-        <!-- Game Over/Start Message Box (Initially Visible when game-container is shown) -->
         <div id="message-container" style="display: flex;">
             <div class="message-box">
                 <h2 id="message-title">BaseJUMP</h2>
                 <p id="message-score" class="text-xl mt-4">Pay a small fee to play!</p>
-                <div id="payment-status"></div> <!-- This is the status display area -->
-                <button id="restart-button">Pay & Play</button>
+                <div id="payment-status"></div> <button id="restart-button">Pay & Play</button>
             </div>
         </div>
     </div>
@@ -303,7 +292,7 @@
     const GAME_FEE_ETH = '0.00001'; 
     const DEVELOPER_WALLET = '0x0e315015A4eE8d5D6c4b43E300dF76b965D55bDd'; // !!! IMPORTANT: REPLACE WITH YOUR DEVELOPER WALLET ADDRESS !!!
     const TARGET_CHAIN_ID = '0x2105'; // Base Mainnet
-    
+   
     let isWalletConnected = false; // New global state for connection
 
     // ========= 3. Farcaster/Wallet Helpers (Pro Style) =========
@@ -312,7 +301,7 @@
         const frac=(f+'0'.repeat(18)).slice(0,18); 
         return '0x'+(BigInt(w)*10n**18n + BigInt(frac)).toString(16); 
     }
-    
+   
     async function getProvider(){ 
         try{ 
             const p = await sdk.wallet.getEthereumProvider(); 
@@ -320,7 +309,7 @@
         } catch(e) { console.warn("Farcaster provider error", e); } 
         return window.ethereum ?? null; 
     }
-    
+   
     async function ensureChain(provider, chainId){
         const current = (await provider.request({method:'eth_chainId'}))?.toLowerCase();
         if(current === chainId.toLowerCase()) return;
@@ -328,7 +317,7 @@
             await provider.request({method:'wallet_switchEthereumChain', params:[{chainId}]}); 
         } catch(e) {
             if(e?.code === 4902) { 
-                 throw new Error("Wrong network. Please switch to Base.");
+                throw new Error("Wrong network. Please switch to Base.");
             } else { 
                 throw e; 
             }
@@ -345,12 +334,12 @@
         walletStatusEl.className = `mt-4 p-3 font-semibold rounded-lg text-sm bg-white/10 ${type === 'error' ? 'text-red-400' : type === 'success' ? 'text-green-400' : 'text-blue-200'}`;
         walletStatusEl.style.display = 'block';
     }
-    
+   
     const setPaymentStatus = (msg, type = 'loading') => {
         paymentStatusEl.textContent = msg;
         paymentStatusEl.className = type; // 'loading', 'success', 'error'
     }
-    
+   
     const hideAllStatuses = () => {
         walletStatusEl.style.display = 'none';
         paymentStatusEl.style.display = 'none';
@@ -373,19 +362,19 @@
         // Re-draw/resize when showing game for the first time
         resizeCanvas();
     }
-    
+   
     // --- Wallet Connection Logic ---
     async function connectWallet(triggerBtn){
         let provider, accounts;
         try{ 
             if (triggerBtn) triggerBtn.disabled = true;
-            
+           
             provider = await getProvider();
             if(!provider){ 
                 setWalletStatus('No wallet found. Please use the app inside Farcaster.', 'error'); 
                 throw new Error('NO_PROVIDER'); 
             }
-            
+           
             setWalletStatus('Requesting account access...', 'loading');
             // Request accounts to establish connection
             accounts = await provider.request({ method:'eth_requestAccounts' });
@@ -398,17 +387,17 @@
 
             setWalletStatus('Switching to Base...', 'loading');
             await ensureChain(provider, TARGET_CHAIN_ID);
-            
+           
             // Success
             isWalletConnected = true;
             connectedAddressEl.textContent = `Connected: ${from.slice(0, 6)}...${from.slice(-4)}`;
             connectedAddressEl.style.display = 'block';
             setWalletStatus('Wallet connected!', 'success');
-            
+           
             // Switch to game view after a small delay
             setTimeout(() => {
-                 showGame();
-                 hideAllStatuses();
+                showGame();
+                hideAllStatuses();
             }, 500);
 
         }
@@ -427,19 +416,19 @@
         setPaymentStatus('1/3: Getting account...', 'loading');
         const provider = await getProvider();
         if(!provider){ setPaymentStatus('Wallet lost. Please refresh.', 'error'); throw new Error('NO_PROVIDER'); }
-        
+       
         const [from] = await provider.request({ method:'eth_accounts' });
         if (!from) { setPaymentStatus('Not connected. Re-run connection.', 'error'); throw new Error('NO_ACCOUNT'); }
-        
+       
         setPaymentStatus('2/3: Checking network...', 'loading');
         await ensureChain(provider, TARGET_CHAIN_ID);
-        
+       
         setPaymentStatus('3/3: Sending payment...', 'loading');
         const hash = await provider.request({
             method:'eth_sendTransaction',
             params:[{ from, to: DEVELOPER_WALLET, value: parseEther(GAME_FEE_ETH) }]
         });
-        
+       
         setPaymentStatus('✅ Payment complete!', 'success');
         return hash;
     }
@@ -449,8 +438,8 @@
             triggerBtn.disabled = true; 
             await requiredPaymentTransaction(); 
             setTimeout(() => { 
-                 action(); // Call the action (resetGame)
-                 paymentStatusEl.style.display = 'none'; // Hide status message
+                action(); // Call the action (resetGame)
+                paymentStatusEl.style.display = 'none'; // Hide status message
             }, 1000);
         }
         catch(e){ 
@@ -473,7 +462,7 @@
     const messageContainer = document.getElementById('message-container');
     const connectButton = document.getElementById('connect-wallet-btn');
     const restartButton = document.getElementById('restart-button');
-    
+   
     // Game State
     let game = {
         isRunning: false,
@@ -496,18 +485,18 @@
     let obstacles = [];
     let birds = []; 
     let animationFrameId;
-    
+   
     let lastClickTime = 0;
     const DOUBLE_CLICK_TIME = 300; 
 
     // ... (All colors remain the same) ...
     const BACKGROUND_COLOR_START = '#007FFF'; 
     const BACKGROUND_COLOR_END = '#0044AA';   
-    const GROUND_COLOR = '#4477AA';           
-    const OBSTACLE_COLOR = '#000000';         
-    const BIRD_COLOR = '#000000';             
-    const BALL_FILL_COLOR = '#FFFFFF';      
-    const CUTOUT_COLOR = '#0052FF';           
+    const GROUND_COLOR = '#4477AA';         
+    const OBSTACLE_COLOR = '#000000';       
+    const BIRD_COLOR = '#000000';           
+    const BALL_FILL_COLOR = '#FFFFFF';    
+    const CUTOUT_COLOR = '#0052FF';       
 
     // --- Utility Functions ---
     function loadHighScore() { 
@@ -553,7 +542,7 @@
         birds = []; 
         player.reset();
         messageContainer.style.display = 'none';
-        
+       
         if (animationFrameId) {
             cancelAnimationFrame(animationFrameId);
         }
@@ -565,19 +554,19 @@
     function spawnBird(time) { 
         const r = 0.7 + Math.random() * 0.6; if (time - game.lastBirdTime > game.birdInterval * r) { birds.push(new Bird()); game.lastBirdTime = time; }
     }
-    
+   
     // UPDATED: checkCollision to check for intersection
     function checkCollision() { 
         const pRect = player.getBounds();
-        
+       
         // Player is a circle (radius r) approximated as a box for collision
         const playerXCenter = pRect.x + pRect.width / 2;
         const playerYCenter = pRect.y + pRect.height / 2;
         const playerRadius = pRect.width / 2;
-        
+       
         for (let i = 0; i < obstacles.length; i++) { 
             const oRect = obstacles[i].getBounds(); 
-            
+           
             // Check for overlap between the player box and obstacle box
             // Note: The player draw function is a circle, but the bounds are a square
             if (pRect.x < oRect.x + oRect.width && // Check if player's right edge is past obstacle's left edge
@@ -585,18 +574,18 @@
                 pRect.y < oRect.y + oRect.height && // Check if player's bottom edge is past obstacle's top edge
                 pRect.y + pRect.height > oRect.y) // Check if player's top edge is past obstacle's bottom edge
             { 
-                 // Simple Bounding Box Collision detected. 
-                 // Since the obstacle is a spike and the player is a ball, 
-                 // we rely on the bounding box for simplicity in a mini-game.
-                 gameOver(); 
-                 return true; 
+                // Simple Bounding Box Collision detected. 
+                // Since the obstacle is a spike and the player is a ball, 
+                // we rely on the bounding box for simplicity in a mini-game.
+                gameOver(); 
+                return true; 
             } 
         } 
-        
+       
         // Check collision with birds (simple box check, but we use the size property)
          for (let i = 0; i < birds.length; i++) {
             const b = birds[i];
-            
+           
             // Bird bounds: using the draw size (2*size for width, size for height)
             if (playerXCenter - playerRadius < b.x + b.size * 2 &&
                 playerXCenter + playerRadius > b.x &&
@@ -607,15 +596,15 @@
                 return true;
             }
         }
-        
+       
         return false;
     }
-    
+   
     function gameOver() {
         game.isRunning = false;
         game.isGameOver = true;
         cancelAnimationFrame(animationFrameId);
-        
+       
         const finalScore = Math.floor(game.score / 10);
         if (finalScore > game.highScore) {
             game.highScore = finalScore;
@@ -642,7 +631,7 @@
     function drawGround() { 
         ctx.fillStyle = GROUND_COLOR; ctx.fillRect(0, game.groundY, canvas.width, canvas.height - game.groundY); ctx.strokeStyle = '#333'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(0, game.groundY); ctx.lineTo(canvas.width, game.groundY); ctx.stroke();
     }
-    
+   
     // New function to draw only the static background/ground
     function drawStaticLandingScene() {
         drawBackground();
@@ -652,7 +641,7 @@
              player.draw();
         }
     }
-    
+   
     function gameLoop(time) { 
         if (!game.isRunning) return;
         drawBackground();
@@ -660,16 +649,16 @@
         drawGround();
         player.update(); player.draw();
         spawnObstacle(time); obstacles = obstacles.filter(o => { o.update(); o.draw(); return o.x + o.width > 0; });
-        
+       
         // Important: Check collision only after drawing/updating all positions
         if (checkCollision()) {
              return; // Stop the loop if collision happens
         }
-        
+       
         updateScore();
         animationFrameId = requestAnimationFrame(gameLoop);
     }
-    
+   
     // --- Event Listeners and Initialization ---
     function resizeCanvas() { 
         // Our canvas always takes the size of the app-container
@@ -677,7 +666,7 @@
         canvas.width = c.clientWidth - 20; 
         canvas.height = c.clientHeight - 20; 
         game.groundY = canvas.height * 0.9;
-        
+       
         if (!player) { 
             player = new Player(30, game.groundY - 30, 30); 
         } else { 
@@ -693,10 +682,10 @@
              drawStaticLandingScene();
         }
     }
-    
+   
     function handleJump(event) {
         if (!game.isRunning) return; // Do nothing if the game is not running
-        
+       
         // Handle Spacebar (always allows single press jump)
         if (event.type === 'keydown') {
              if (event.code !== 'Space') return;
@@ -704,11 +693,11 @@
              player.jump();
              return;
         }
-        
+       
         // --- Double Click/Tap Logic for Mouse/Touch ---
         const currentTime = performance.now();
         const timeDiff = currentTime - lastClickTime;
-        
+       
         if (timeDiff > 0 && timeDiff < DOUBLE_CLICK_TIME) {
             event.preventDefault(); 
             player.jump();
@@ -723,36 +712,34 @@
     canvas.addEventListener('mousedown', handleJump);
     canvas.addEventListener('touchstart', (e) => { e.preventDefault(); handleJump(e); });
     document.addEventListener('keydown', handleJump);
-    
+   
     // Landing Page Button Listener
     connectButton.addEventListener('click', () => {
         hideAllStatuses();
         connectWallet(connectButton);
     });
-    
+   
     // Restart Button Listener (still handles payment for playing)
     restartButton.addEventListener('click', () => {
         // Clear the message before starting the payment
         paymentStatusEl.textContent = '';
         paymentStatusEl.className = '';
         paymentStatusEl.style.display = 'none';
-        
+       
         payThen(resetGame, restartButton);
     });
-    
+   
     // Initial setup on load: Try to connect silently, otherwise show landing page
     loadHighScore();
-    
+   
     // Call resize Canvas and drawStaticLandingScene at startup
     resizeCanvas();
     drawStaticLandingScene(); 
-    
+   
     // Try to connect the wallet silently on load (no button reference)
     connectWallet(null);
-    
+   
 </script>
 
 </body>
 </html>
-
-
