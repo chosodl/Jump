@@ -1,1 +1,11 @@
+{
+  "version": "1",
+  "name": "Crypto Portfolio Tracker",
+  "description": "Easily track and manage your cryptocurrency portfolio.",
+  "website": "https://basejump-7575.vercel.app/",
+  "screenshot": "https://basejump-7575.vercel.app/image.png",
+  "theme_color": "#5A63FF",
+  "categories": ["finance"],
+  "tags": ["crypto", "portfolio", "tracker"]
+}
 
