@@ -83,6 +83,14 @@
             flex-direction: column;
             align-items: center;
         }
+
+        /* NEW: Make game-container clickable, but not its children */
+        #game-container {
+            cursor: pointer;
+        }
+        #ui-bar, #controls, .message-box, #landing-page {
+            cursor: default;
+        }
         
         /* Override for landing page to fit in its place */
         #landing-page {
@@ -463,6 +471,8 @@
     const messageContainer = document.getElementById('message-container');
     const connectButton = document.getElementById('connect-wallet-btn');
     const restartButton = document.getElementById('restart-button');
+    // ** NEW: Get gameContainer here **
+    const gameContainerEl = document.getElementById('game-container');
     
     // Game State
     let game = {
@@ -697,8 +707,9 @@
 
     // Initialize the Game Listeners (only apply when game is active)
     window.addEventListener('resize', resizeCanvas);
-    canvas.addEventListener('mousedown', handleJump);
-    canvas.addEventListener('touchstart', handleJump); // Pass event directly
+    // ========= CHANGED: Attach listeners to gameContainerEl, not canvas =========
+    gameContainerEl.addEventListener('mousedown', handleJump);
+    gameContainerEl.addEventListener('touchstart', handleJump); // Pass event directly
     document.addEventListener('keydown', handleJump);
     
     // Landing Page Button Listener
@@ -708,7 +719,8 @@
     });
     
     // Restart Button Listener (still handles payment for playing)
-    restartButton.addEventListener('click', () => {
+    restartButton.addEventListener('click', (e) => { // <--- ADDED 'e'
+        e.stopPropagation(); // <--- ADDED: Stop tap from bubbling up to gameContainer
         // Clear the message before starting the payment
         paymentStatusEl.textContent = '';
         paymentStatusEl.className = '';
@@ -731,3 +743,4 @@
 
 </body>
 </html>
+
